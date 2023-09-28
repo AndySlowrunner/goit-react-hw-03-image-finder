@@ -1,28 +1,36 @@
 import { Component } from "react"
+// import axios from "axios";
 import { Searchbar } from "../Searchbar/Searchbar";
 import { StyledApp } from "./StyledApp";
+import { ImageGallery } from "components/ImageGallery/ImageGallery";
+import { ImageGalleryItem } from "components/ImageGalleryItem/ImageGalleryItem";
+import { getImagesWithQuery } from "components/Service/Api";
 
 export class App extends Component {
   state = {
     query: '',
     page: 1,
-    image: [],
+    images: [],
+    isLoading: false,
+    error: null,
   };
 
   changeQuery = newQuery => {
     this.setState({
-     query: `${Math.random().toFixed(4)}/${newQuery}`, 
-     page: 1,
-     image: [],
-    })
+      query: `${Math.random().toFixed(4)}/${newQuery}`,
+      page: 1,
+      images: [],
+    });
   };
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidMount() {};
+  
+  async componentDidUpdate(prevProps, prevState) {
     if (prevState.query !== this.state.query || prevState.page !== this.setState.page) {
-      console.log("Do HTTP-query!")
-      console.log(this.state.query)
+      const images = getImagesWithQuery(this.state.query);
+      this.setState({ images: images });
     }
-  }
+  };
 
   render() {
     return (
@@ -33,6 +41,7 @@ export class App extends Component {
           evt.target.reset();
         }}
         />
+        <ImageGallery gallery={this.state.images} Children={ImageGalleryItem} />
       </StyledApp>
   )};
 };
