@@ -1,7 +1,7 @@
 import { StyledSearch, StyledForm, StyledFormButton, StyledButtonLable, StyledFormInput } from "./StyledSearchbar";
 import { BiSearchAlt2 } from "react-icons/bi";
 
-export const Searchbar = ({onSubmit}) => {
+export const Searchbar = ({ onSubmit }) => {
     return (
         <StyledSearch>
             <StyledForm onSubmit={onSubmit}>
