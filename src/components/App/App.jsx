@@ -1,10 +1,12 @@
 import { Component } from "react"
 // import axios from "axios";
-import { StyledApp } from "./StyledApp";
+import { LoadMoreButton, StyledApp } from "./StyledApp";
 import { Searchbar } from "../Searchbar/Searchbar";
 import { ImageGallery } from "components/ImageGallery/ImageGallery";
 import { ImageGalleryItem } from "components/ImageGalleryItem/ImageGalleryItem";
 import { getImagesWithQuery } from "components/Service/Api";
+import { Dna } from "react-loader-spinner";
+import { ModalWindow } from "components/ModalWindow/ModalWindow";
 
 
 //       query: `${Math.random().toFixed(4)}/${newQuery}`,
@@ -17,6 +19,7 @@ export class App extends Component {
         images: [],
         isLoading: false,
         error: null,
+        hasMoreImages: false,
     };
 
     changeQuery = (newQuery) => {
@@ -27,19 +30,31 @@ export class App extends Component {
         });
     };
 
+    handleLoadMore = () => {
+        this.setState(prevState => ({page: prevState.page + 1}))
+     };
+
     async componentDidUpdate(prevProps, prevState) {
+
         if (
             prevState.query !== this.state.query ||
             prevState.page !== this.state.page
         ) {
             try {
+                this.setState({ isLoading: true });
                 const images = await getImagesWithQuery(
                     this.state.query,
                     this.state.page
                 );
-                this.setState({ images, isLoading: false });
+                this.setState(prevState => ({
+                    images: [...prevState.images, ...images],
+                    isLoading: false,
+                    hasMoreImages: images.length > 0,
+                }));
             } catch (error) {
                 this.setState({ error, isLoading: false });
+            } finally {
+                this.setState({ isLoading: false });
             }
         }
     }
@@ -54,7 +69,24 @@ export class App extends Component {
                         evt.target.reset();
                     }}
                 />
+                {this.state.isLoading &&
+                    <Dna
+                        visible={true}
+                        height="80"
+                        width="80"
+                        ariaLabel="dna-loading"
+                        wrapperStyle={{}}
+                        wrapperClass="dna-wrapper"
+                    />
+                }
                 <ImageGallery gallery={this.state.images} Children={ImageGalleryItem} />
+                <ModalWindow></ModalWindow>
+                <LoadMoreButton
+                    onClick={this.handleLoadMore}
+                    style={{ display: this.state.hasMoreImages ? "block" : "none" }}
+                >
+                    Load more
+                </LoadMoreButton>
             </StyledApp>
         );
     }
