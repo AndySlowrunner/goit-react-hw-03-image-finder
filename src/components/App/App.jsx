@@ -1,16 +1,10 @@
 import { Component } from "react"
-// import axios from "axios";
 import { LoadMoreButton, StyledApp } from "./StyledApp";
 import { Searchbar } from "../Searchbar/Searchbar";
 import { ImageGallery } from "components/ImageGallery/ImageGallery";
 import { ImageGalleryItem } from "components/ImageGalleryItem/ImageGalleryItem";
 import { getImagesWithQuery } from "components/Service/Api";
 import { Dna } from "react-loader-spinner";
-import { ModalWindow } from "components/ModalWindow/ModalWindow";
-
-
-//       query: `${Math.random().toFixed(4)}/${newQuery}`,
-
 
 export class App extends Component {
     state = {
@@ -80,7 +74,6 @@ export class App extends Component {
                     />
                 }
                 <ImageGallery gallery={this.state.images} Children={ImageGalleryItem} />
-                <ModalWindow></ModalWindow>
                 <LoadMoreButton
                     onClick={this.handleLoadMore}
                     style={{ display: this.state.hasMoreImages ? "block" : "none" }}
